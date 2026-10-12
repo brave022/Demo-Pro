@@ -1,0 +1,2038 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="theme-color" content="#f5f0e6" />
+<meta name="description" content="DemoBuddy is an interactive, browser-local rehearsal agent for students and developers to practice project demos, overcome stage fright, and handle live demo failures." />
+<title>DemoBuddy — Rehearse. Refine. Shine.</title>
+<style>
+:root{
+  --paper:#f5f0e6;
+  --paper-subtle:#eae3d4;
+  --ink:#25251f;
+  --ink-secondary:#55564b;
+  --muted:#68685e;
+  --olive:#415942;
+  --olive-hover:#314432;
+  --olive2:#dce7d8;
+  --coral:#e66e52;
+  --coral-hover:#d25a3f;
+  --yellow:#f0c85a;
+  --lilac:#dcd3f2;
+  --white:#fffdf8;
+  --card-bg:#fffdf8;
+  --input-bg:#fbf8f0;
+  --line:#d9d1c4;
+  --shadow:0 18px 45px rgba(48,49,39,.09);
+  --shadow-sm:0 6px 18px rgba(48,49,39,.06);
+  --radius-lg:22px;
+  --radius-md:14px;
+  --radius-sm:9px;
+  --font-sans:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --font-serif:Georgia,Cambria,"Times New Roman",serif;
+}
+
+[data-theme="dark"]{
+  --paper:#14171a;
+  --paper-subtle:#1b1f24;
+  --ink:#f0efe9;
+  --ink-secondary:#bdc1c6;
+  --muted:#8b949e;
+  --olive:#5a805c;
+  --olive-hover:#6e9970;
+  --olive2:#213324;
+  --coral:#f07d64;
+  --coral-hover:#f5937d;
+  --yellow:#d9aa38;
+  --lilac:#443b59;
+  --white:#1c2026;
+  --card-bg:#1e232b;
+  --input-bg:#16191f;
+  --line:#2e353f;
+  --shadow:0 18px 45px rgba(0,0,0,.45);
+  --shadow-sm:0 6px 18px rgba(0,0,0,.3);
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font:16px/1.5 var(--font-sans);
+  transition:background .25s ease,color .25s ease;
+  overflow-x:hidden;
+}
+
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{
+  outline:3px solid #4c77ce;
+  outline-offset:2px;
+}
+a{color:inherit}
+
+.shell{max-width:1180px;margin:auto;padding:26px 26px 54px}
+
+/* TOPBAR */
+.topbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  margin-bottom:34px;
+  flex-wrap:wrap;
+}
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  font-size:20px;
+  font-weight:850;
+  letter-spacing:-.04em;
+  user-select:none;
+}
+.brandmark{
+  display:grid;
+  place-items:center;
+  width:42px;
+  height:42px;
+  border-radius:14px;
+  background:var(--olive);
+  color:#fffdf8;
+  font-size:23px;
+  box-shadow:4px 4px 0 var(--yellow);
+  transform:rotate(-4deg);
+  transition:transform .2s ease;
+}
+.brandmark:hover{transform:rotate(2deg) scale(1.05)}
+.topnote{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:750}
+.top-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+
+.small-pill{
+  border:1px solid var(--line);
+  border-radius:99px;
+  padding:6px 12px;
+  font-size:11px;
+  font-weight:750;
+  background:var(--card-bg);
+  color:var(--ink);
+  letter-spacing:.04em;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  text-decoration:none;
+  transition:all .15s ease;
+}
+.small-pill.mode{background:#f8e5de;border-color:#e9b6a7;color:#884331}
+[data-theme="dark"] .small-pill.mode{background:#3b231d;border-color:#613429;color:#ff9e87}
+.small-pill.clickable{cursor:pointer}
+.small-pill.clickable:hover{background:var(--paper-subtle);transform:translateY(-1px)}
+
+/* HERO */
+.hero{
+  display:grid;
+  grid-template-columns:1.1fr .9fr;
+  gap:38px;
+  align-items:center;
+  margin:0 0 32px;
+}
+.eyebrow{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  font-size:12px;
+  font-weight:850;
+  text-transform:uppercase;
+  letter-spacing:.16em;
+  color:var(--olive);
+  margin-bottom:14px;
+}
+.spark{width:9px;height:9px;background:var(--coral);border-radius:50%;box-shadow:0 0 0 5px #f4dcd4}
+[data-theme="dark"] .spark{box-shadow:0 0 0 5px #44261f}
+
+.hero h1{
+  font-size:clamp(38px,5.2vw,64px);
+  line-height:.99;
+  letter-spacing:-.065em;
+  margin:0 0 18px;
+  max-width:650px;
+}
+.hero h1 em{
+  font-style:normal;
+  color:var(--coral);
+  font-family:var(--font-serif);
+  font-weight:500;
+}
+.hero p{
+  font-size:17.5px;
+  color:var(--ink-secondary);
+  max-width:570px;
+  margin:0 0 24px;
+  line-height:1.55;
+}
+.hero-ctas{display:flex;gap:11px;flex-wrap:wrap}
+
+/* BUTTONS */
+.btn{
+  border:0;
+  border-radius:12px;
+  padding:12px 18px;
+  font-weight:800;
+  font-size:14px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  transition:transform .15s ease,box-shadow .15s ease,background .15s ease,color .15s ease;
+  user-select:none;
+}
+.btn:hover{transform:translateY(-2px)}
+.btn:active{transform:translateY(0)}
+.btn-primary{background:var(--olive);color:#fff;box-shadow:0 4px 0 var(--olive-hover)}
+.btn-primary:hover{background:var(--olive-hover)}
+.btn-secondary{background:var(--card-bg);border:1px solid var(--line);color:var(--ink);box-shadow:0 2px 0 var(--line)}
+.btn-secondary:hover{background:var(--paper-subtle)}
+.btn-coral{background:var(--coral);color:#fff;box-shadow:0 4px 0 var(--coral-hover)}
+.btn-coral:hover{background:var(--coral-hover)}
+.btn-sm{font-size:12.5px;padding:8px 12px;border-radius:10px}
+.btn-icon{padding:8px;border-radius:10px;width:34px;height:34px;display:inline-grid;place-items:center}
+
+/* HERO ART */
+.hero-art{
+  position:relative;
+  min-height:330px;
+  border:1px solid var(--line);
+  border-radius:28px;
+  background:#e6eadb;
+  overflow:hidden;
+  box-shadow:var(--shadow);
+  padding:22px;
+  isolation:isolate;
+}
+[data-theme="dark"] .hero-art{background:#1a231b}
+.art-sun{
+  position:absolute;
+  width:190px;
+  height:190px;
+  border-radius:50%;
+  background:var(--yellow);
+  right:-20px;
+  top:-28px;
+  z-index:-1;
+  opacity:.9;
+}
+.art-stage{
+  position:absolute;
+  right:30px;
+  top:44px;
+  width:66%;
+  height:230px;
+  background:var(--olive);
+  border-radius:17px;
+  transform:rotate(3deg);
+  box-shadow:0 13px 0 rgba(37,37,31,.12);
+  padding:18px;
+  color:#fff;
+  transition:transform .3s ease;
+}
+.hero-art:hover .art-stage{transform:rotate(1deg) translateY(-2px)}
+.stage-tab{display:flex;gap:6px;margin-bottom:18px}
+.stage-tab span{width:8px;height:8px;border-radius:50%;background:var(--yellow)}
+.mini-question{
+  position:relative;
+  background:#fff9e8;
+  color:#2b2e25;
+  padding:10px 13px;
+  border-radius:10px;
+  font-size:12.5px;
+  font-weight:780;
+  width:85%;
+  box-shadow:0 4px 0 rgba(0,0,0,.1);
+  margin-bottom:11px;
+}
+.mini-question:nth-child(3){margin-left:20px;background:var(--lilac);color:#261f36}
+.art-person{
+  position:absolute;
+  left:27px;
+  bottom:-4px;
+  width:155px;
+  height:198px;
+  z-index:2;
+}
+.person-head{
+  position:absolute;
+  top:0;
+  left:44px;
+  width:67px;
+  height:68px;
+  background:#bc7f58;
+  border-radius:44% 45% 48% 42%;
+  border:4px solid #303126;
+}
+.person-hair{
+  position:absolute;
+  top:-9px;
+  left:37px;
+  width:81px;
+  height:60px;
+  background:#292821;
+  border-radius:48% 48% 34% 35%;
+  transform:rotate(-9deg);
+}
+.person-body{
+  position:absolute;
+  left:14px;
+  bottom:0;
+  width:137px;
+  height:136px;
+  border-radius:65px 65px 8px 8px;
+  background:var(--coral);
+  border:4px solid #303126;
+}
+.person-neck{position:absolute;top:54px;left:66px;width:27px;height:31px;background:#bc7f58;z-index:1}
+.person-face{position:absolute;top:30px;left:80px;z-index:2;font-size:16px;letter-spacing:8px;color:#292821}
+.art-pencil{
+  position:absolute;
+  left:37px;
+  bottom:23px;
+  height:6px;
+  width:85px;
+  border-radius:10px;
+  background:var(--yellow);
+  transform:rotate(-27deg);
+  z-index:4;
+}
+.art-note{
+  position:absolute;
+  bottom:22px;
+  right:22px;
+  background:var(--card-bg);
+  padding:9px 12px;
+  border-radius:9px;
+  border:1px solid var(--line);
+  font-size:12px;
+  transform:rotate(-4deg);
+  font-weight:750;
+  box-shadow:var(--shadow-sm);
+}
+.art-caption{
+  position:absolute;
+  left:22px;
+  top:20px;
+  font-size:11.5px;
+  font-weight:850;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color:var(--olive);
+}
+
+/* LAYOUT & PANELS */
+.layout{
+  display:grid;
+  grid-template-columns:minmax(0,1.24fr) minmax(300px,.76fr);
+  gap:22px;
+  align-items:start;
+}
+.panel{
+  background:var(--card-bg);
+  border:1px solid var(--line);
+  border-radius:var(--radius-lg);
+  box-shadow:var(--shadow);
+  overflow:hidden;
+  transition:border-color .2s ease;
+}
+.panel-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:16px;
+  padding:22px 24px 17px;
+  border-bottom:1px solid var(--line);
+}
+.panel-head h2{font-size:21px;letter-spacing:-.035em;margin:0 0 4px}
+.panel-head p{font-size:13px;color:var(--muted);margin:0}
+.step-mark{
+  flex:none;
+  border-radius:12px;
+  background:var(--yellow);
+  color:#25251f;
+  padding:8px 11px;
+  font-size:11px;
+  font-weight:850;
+  letter-spacing:.05em;
+}
+.panel-body{padding:22px 24px 24px}
+
+/* FORM FIELDS */
+.field{display:grid;gap:7px;margin-bottom:16px}
+.field label{font-size:13px;font-weight:800;display:flex;justify-content:space-between;align-items:center}
+.field input,.field textarea,.field select{
+  width:100%;
+  background:var(--input-bg);
+  color:var(--ink);
+  border:1px solid var(--line);
+  border-radius:11px;
+  padding:12px 14px;
+  font-size:14.5px;
+  transition:border-color .15s ease,background .15s ease;
+}
+.field input:focus,.field textarea:focus,.field select:focus{
+  border-color:var(--olive);
+}
+.field textarea{resize:vertical;min-height:92px}
+.field .helper{font-size:12px;color:var(--muted)}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.full{width:100%}
+
+/* PRESET CHIPS */
+.preset-bar{
+  margin-bottom:16px;
+  padding:11px 13px;
+  background:var(--paper-subtle);
+  border-radius:13px;
+  border:1px dashed var(--line);
+}
+.preset-title{
+  font-size:11px;
+  font-weight:850;
+  text-transform:uppercase;
+  letter-spacing:.1em;
+  color:var(--muted);
+  margin-bottom:8px;
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+.preset-chips{display:flex;gap:7px;flex-wrap:wrap}
+.preset-chip{
+  background:var(--card-bg);
+  border:1px solid var(--line);
+  border-radius:8px;
+  padding:5px 9px;
+  font-size:12px;
+  font-weight:750;
+  cursor:pointer;
+  transition:all .15s ease;
+}
+.preset-chip:hover{
+  background:var(--olive);
+  color:#fff;
+  border-color:var(--olive);
+  transform:translateY(-1px);
+}
+
+.tiny-note{
+  margin-top:14px;
+  display:flex;
+  align-items:flex-start;
+  gap:9px;
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.45;
+}
+.tiny-note b{color:var(--olive)}
+
+/* SIDE STACK */
+.side-stack{display:grid;gap:16px}
+.side-card{
+  border:1px solid var(--line);
+  border-radius:19px;
+  background:#e9ece1;
+  padding:21px;
+  color:var(--ink);
+}
+[data-theme="dark"] .side-card{background:#1d241e;border-color:var(--line)}
+.side-card:nth-child(2){background:#f7e5dc}
+[data-theme="dark"] .side-card:nth-child(2){background:#2a1e1b}
+.side-card h3{margin:0 0 9px;font-size:16px;letter-spacing:-.02em}
+.side-card p{font-size:13px;color:var(--ink-secondary);margin:0;line-height:1.45}
+.steps{display:grid;gap:12px;margin-top:15px}
+.side-step{display:flex;gap:10px;align-items:flex-start;font-size:13px;font-weight:700}
+.number{
+  width:25px;
+  height:25px;
+  display:grid;
+  place-items:center;
+  background:var(--card-bg);
+  border:1px solid var(--line);
+  border-radius:9px;
+  flex:none;
+  font-size:11px;
+  font-weight:850;
+}
+.case-chip{
+  display:inline-flex;
+  gap:7px;
+  align-items:center;
+  background:var(--card-bg);
+  border:1px solid var(--line);
+  border-radius:999px;
+  padding:6px 10px;
+  font-size:11px;
+  font-weight:800;
+  margin:12px 5px 0 0;
+}
+.case-chip i{width:7px;height:7px;display:block;border-radius:50%;background:var(--coral)}
+
+/* CHAT & REHEARSAL PANEL */
+.chat-panel{margin-top:24px}
+.chat-body{padding:22px 24px}
+
+.session-bar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:16px;
+  margin-bottom:20px;
+  flex-wrap:wrap;
+}
+.progress-track{
+  height:8px;
+  background:var(--paper-subtle);
+  border-radius:99px;
+  flex:1;
+  min-width:140px;
+  overflow:hidden;
+}
+.progress-fill{
+  height:100%;
+  width:0;
+  background:var(--olive);
+  border-radius:99px;
+  transition:width .35s cubic-bezier(.4,0,.2,1);
+}
+.progress-label{
+  font-size:11.5px;
+  font-weight:850;
+  color:var(--olive);
+  letter-spacing:.06em;
+  white-space:nowrap;
+}
+
+/* TIMER WIDGET */
+.timer-widget{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  background:var(--paper-subtle);
+  border:1px solid var(--line);
+  border-radius:99px;
+  padding:5px 12px;
+  font-size:12px;
+  font-weight:800;
+  letter-spacing:.04em;
+}
+.timer-pulse{
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:var(--coral);
+  animation:pulse 1.6s infinite ease-in-out;
+}
+@keyframes pulse{
+  0%,100%{transform:scale(1);opacity:1}
+  50%{transform:scale(1.4);opacity:.5}
+}
+
+/* MESSAGES */
+.messages{
+  display:grid;
+  gap:14px;
+  margin-bottom:20px;
+  max-height:480px;
+  overflow-y:auto;
+  padding-right:4px;
+}
+.message{
+  max-width:92%;
+  padding:14px 17px;
+  border-radius:17px;
+  font-size:14.5px;
+  line-height:1.55;
+  animation:fadeSlideIn .25s ease-out;
+}
+@keyframes fadeSlideIn{
+  from{opacity:0;transform:translateY(6px)}
+  to{opacity:1;transform:translateY(0)}
+}
+.message.agent{
+  background:#e7ebdf;
+  border-bottom-left-radius:5px;
+  justify-self:start;
+  color:var(--ink);
+  border:1px solid #d4ded0;
+}
+[data-theme="dark"] .message.agent{
+  background:#1e2920;
+  border-color:#2a3b2d;
+  color:#e7f0e6;
+}
+.message.user{
+  background:#f5ded5;
+  border-bottom-right-radius:5px;
+  justify-self:end;
+  color:var(--ink);
+  border:1px solid #ecc9be;
+}
+[data-theme="dark"] .message.user{
+  background:#34231f;
+  border-color:#482d27;
+  color:#fbe8e4;
+}
+.msg-label{
+  display:block;
+  font-size:10.5px;
+  text-transform:uppercase;
+  letter-spacing:.12em;
+  font-weight:850;
+  color:#415942;
+  margin-bottom:5px;
+}
+[data-theme="dark"] .msg-label{color:#8ab58c}
+.message.user .msg-label{color:#9a4d37}
+[data-theme="dark"] .message.user .msg-label{color:#e6846f}
+
+/* ANSWER BOX */
+.answer-box{
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:14px;
+  background:var(--input-bg);
+  box-shadow:var(--shadow-sm);
+  transition:border-color .15s ease;
+}
+.answer-box:focus-within{border-color:var(--olive)}
+.answer-box-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:8px;
+}
+.answer-box label{
+  display:block;
+  margin:0;
+  font-weight:850;
+  font-size:11.5px;
+  letter-spacing:.08em;
+  color:var(--olive);
+}
+.answer-box textarea{
+  width:100%;
+  background:transparent;
+  border:0;
+  outline:0;
+  resize:vertical;
+  min-height:92px;
+  color:var(--ink);
+  font-size:15px;
+  line-height:1.5;
+}
+.answer-box textarea:focus-visible{outline:none}
+.answer-actions{
+  display:flex;
+  gap:9px;
+  align-items:center;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  margin-top:10px;
+  padding-top:8px;
+  border-top:1px dashed var(--line);
+}
+.answer-actions .left,.answer-actions .right{
+  display:flex;
+  gap:8px;
+  align-items:center;
+  flex-wrap:wrap;
+}
+
+/* MIC RECORDING STATE */
+.btn-mic{
+  background:var(--card-bg);
+  border:1px solid var(--line);
+  color:var(--ink);
+  transition:all .2s ease;
+}
+.btn-mic.listening{
+  background:var(--coral);
+  color:#fff;
+  border-color:var(--coral);
+  animation:micPulse 1s infinite alternate;
+}
+@keyframes micPulse{
+  from{box-shadow:0 0 0 2px rgba(230,110,82,.4)}
+  to{box-shadow:0 0 0 8px rgba(230,110,82,0)}
+}
+
+.status{
+  font-size:12px;
+  color:var(--muted);
+  min-height:20px;
+  margin-top:9px;
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+
+/* REPORT / SCORECARD */
+.report{display:grid;gap:16px;animation:fadeSlideIn .3s ease-out}
+.score-row{
+  display:grid;
+  grid-template-columns:120px 1fr;
+  gap:16px;
+  align-items:center;
+  background:#e8ecdf;
+  padding:18px 20px;
+  border-radius:16px;
+  border:1px solid #d4ded0;
+}
+[data-theme="dark"] .score-row{
+  background:#1e2920;
+  border-color:#2a3b2d;
+}
+.score-num{
+  font-size:42px;
+  letter-spacing:-.07em;
+  font-weight:900;
+  color:var(--olive);
+  line-height:1;
+}
+[data-theme="dark"] .score-num{color:#8ab58c}
+.score-num small{font-size:14px;letter-spacing:0;opacity:.8}
+.score-row h3{margin:0 0 4px;font-size:17px;letter-spacing:-.02em}
+.score-row p{margin:0;color:var(--muted);font-size:12.5px;line-height:1.45}
+
+/* SUB SCORES */
+.sub-scores{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:10px;
+}
+.sub-score-card{
+  background:var(--card-bg);
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:12px 14px;
+}
+.sub-score-label{font-size:11px;font-weight:800;text-transform:uppercase;color:var(--muted);letter-spacing:.06em}
+.sub-score-value{display:flex;justify-content:space-between;align-items:center;margin-top:4px}
+.sub-score-bar{height:5px;background:var(--paper-subtle);border-radius:99px;margin-top:6px;overflow:hidden}
+.sub-score-fill{height:100%;border-radius:99px;background:var(--olive)}
+
+.feedback-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.feedback-card{
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:15px 17px;
+  background:var(--card-bg);
+}
+.feedback-card h4{margin:0 0 7px;font-size:13.5px;letter-spacing:-.01em;display:flex;align-items:center;gap:6px}
+.feedback-card p{margin:0;color:var(--ink-secondary);font-size:12.5px;line-height:1.5}
+
+.pitch{
+  padding:18px 20px;
+  background:#f7e5dc;
+  border-radius:16px;
+  border:1px solid #ebd0c4;
+}
+[data-theme="dark"] .pitch{background:#2a1e1b;border-color:#482d27}
+.pitch-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  margin-bottom:10px;
+  flex-wrap:wrap;
+}
+.pitch h3{font-size:16px;margin:0}
+.pitch-tones{display:flex;gap:6px;flex-wrap:wrap}
+.pitch-tone-btn{
+  background:var(--card-bg);
+  border:1px solid var(--line);
+  border-radius:8px;
+  padding:4px 8px;
+  font-size:11px;
+  font-weight:750;
+  cursor:pointer;
+  transition:all .15s ease;
+}
+.pitch-tone-btn.active,.pitch-tone-btn:hover{
+  background:var(--coral);
+  color:#fff;
+  border-color:var(--coral);
+}
+.pitch p{
+  white-space:pre-wrap;
+  font-size:13.5px;
+  margin:0;
+  line-height:1.6;
+  color:var(--ink);
+}
+
+.report-actions{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:8px;
+}
+
+/* MODAL / RESCUE ARSENAL DRAWER */
+.modal-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(20,23,26,.65);
+  backdrop-filter:blur(4px);
+  z-index:99;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:16px;
+  animation:fadeIn .2s ease;
+}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal-box{
+  background:var(--card-bg);
+  border:1px solid var(--line);
+  border-radius:20px;
+  max-width:620px;
+  width:100%;
+  max-height:90vh;
+  overflow-y:auto;
+  box-shadow:var(--shadow);
+  padding:24px;
+  animation:scaleUp .2s ease;
+}
+@keyframes scaleUp{from{transform:scale(.95)}to{transform:scale(1)}}
+.modal-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  margin-bottom:16px;
+}
+.modal-header h3{margin:0;font-size:18px}
+.modal-close{
+  background:transparent;
+  border:0;
+  font-size:18px;
+  color:var(--muted);
+  cursor:pointer;
+  padding:4px 8px;
+}
+.rescue-grid{display:grid;gap:12px}
+.rescue-card{
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:14px;
+  background:var(--input-bg);
+  cursor:pointer;
+  transition:border-color .15s ease,transform .15s ease;
+}
+.rescue-card:hover{border-color:var(--coral);transform:translateY(-1px)}
+.rescue-card-title{font-size:13.5px;font-weight:800;margin-bottom:5px;display:flex;align-items:center;gap:8px}
+.rescue-card-desc{font-size:12px;color:var(--ink-secondary);line-height:1.45;margin-bottom:8px}
+.rescue-script{
+  background:var(--card-bg);
+  border-left:3px solid var(--coral);
+  padding:8px 10px;
+  font-size:12px;
+  font-style:italic;
+  color:var(--ink);
+  border-radius:4px;
+}
+
+/* HISTORY DRAWER */
+.history-item{
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:12px;
+  margin-bottom:10px;
+  background:var(--input-bg);
+}
+.history-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:5px;
+}
+.history-date{font-size:11px;color:var(--muted)}
+.history-project{font-size:13.5px;font-weight:800}
+
+/* TOAST */
+.toast{
+  position:fixed;
+  bottom:24px;
+  left:50%;
+  transform:translateX(-50%);
+  background:var(--ink);
+  color:var(--paper);
+  padding:11px 18px;
+  border-radius:99px;
+  font-size:13px;
+  font-weight:700;
+  box-shadow:0 12px 30px rgba(0,0,0,.25);
+  z-index:100;
+  transition:all .2s ease;
+}
+.error{color:#d32f2f;font-size:12px;font-weight:700;margin-top:6px}
+.hidden{display:none!important}
+
+/* FOOTER */
+.footer-note{
+  padding-top:35px;
+  color:var(--muted);
+  font-size:12px;
+  text-align:center;
+  line-height:1.6;
+}
+
+/* RESPONSIVE DESIGN */
+@media(max-width:900px){
+  .hero{grid-template-columns:1fr;gap:26px}
+  .hero-art{min-height:300px}
+  .layout{grid-template-columns:1fr}
+  .side-stack{grid-template-columns:1fr 1fr}
+  .hero h1{max-width:800px}
+}
+@media(max-width:620px){
+  .shell{padding:16px 12px 36px}
+  .topbar{margin-bottom:20px}
+  .topnote{display:none}
+  .hero h1{font-size:40px}
+  .hero p{font-size:15.5px}
+  .hero-art{min-height:265px;padding:16px}
+  .art-stage{right:10px;top:44px;width:72%;height:190px;padding:12px}
+  .art-person{left:10px;transform:scale(.8);transform-origin:bottom left}
+  .art-note{right:8px;bottom:10px}
+  .layout{gap:14px}
+  .panel-head,.panel-body,.chat-body{padding-left:14px;padding-right:14px}
+  .side-stack{grid-template-columns:1fr}
+  .field-row{grid-template-columns:1fr;gap:0}
+  .answer-actions{align-items:stretch}
+  .answer-actions .left,.answer-actions .right{width:100%}
+  .answer-actions .btn{flex:1}
+  .feedback-grid{grid-template-columns:1fr}
+  .score-row{grid-template-columns:85px 1fr;padding:14px}
+  .score-num{font-size:32px}
+  .panel-head h2{font-size:19px}
+}
+
+@media(prefers-reduced-motion:reduce){
+  *,*:before,*:after{scroll-behavior:auto!important;transition:none!important;animation:none!important}
+}
+
+/* PRINT STYLES */
+@media print{
+  body{background:#fff;color:#000}
+  .topbar,.hero,.side-stack,#setupPanel,.answer-box,.report-actions,.btn,.toast{display:none!important}
+  .panel,#sessionPanel{border:0;box-shadow:none}
+  .report{display:block!important}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="brand">
+      <span class="brandmark" aria-hidden="true">✳</span>
+      <span>DemoBuddy<span style="color:var(--coral)">.</span></span>
+    </div>
+    <div class="topnote">A little rehearsal goes a long way</div>
+    <div class="top-actions">
+      <button class="small-pill clickable" id="historyToggleBtn" type="button" title="View past rehearsal records">
+        <span>📜 History</span>
+      </button>
+      <button class="small-pill clickable" id="voiceToggleBtn" type="button" title="Toggle audio read aloud">
+        <span id="voiceToggleIcon">🔊 Coach Voice: On</span>
+      </button>
+      <button class="small-pill clickable" id="themeToggleBtn" type="button" title="Switch color theme">
+        <span id="themeToggleText">🌙 Dark</span>
+      </button>
+      <span class="small-pill">STUDENT BUILD</span>
+      <span class="small-pill mode">LOCAL PROTOTYPE</span>
+    </div>
+  </header>
+
+  <!-- HERO SECTION -->
+  <section class="hero" id="hero">
+    <div>
+      <div class="eyebrow"><span class="spark"></span> Project rehearsal, made human</div>
+      <h1>Make your project<br><em>make sense.</em></h1>
+      <p>Practise your demo with a curious audience, get one useful nudge at a time, and leave with a battle-tested pitch.</p>
+      <div class="hero-ctas">
+        <button class="btn btn-primary" id="heroStart" type="button">Start a rehearsal ↗</button>
+        <button class="btn btn-secondary" id="heroSample" type="button">Try the sample project</button>
+      </div>
+    </div>
+    <div class="hero-art" aria-label="Illustration of a rehearsal desk and audience questions">
+      <div class="art-sun"></div>
+      <div class="art-caption">Field notes / No. 01</div>
+      <div class="art-stage">
+        <div class="stage-tab"><span></span><span></span><span></span></div>
+        <div class="mini-question">So, what problem does this solve?</div>
+        <div class="mini-question">What happens if your demo fails?</div>
+        <div style="margin:17px 0 0 15px;font-size:12px;color:#e9eddf;font-weight:700">REHEARSE → REFINE → SHINE</div>
+      </div>
+      <div class="art-person">
+        <div class="person-body"></div>
+        <div class="person-neck"></div>
+        <div class="person-head"></div>
+        <div class="person-hair"></div>
+        <div class="person-face">• •</div>
+        <div class="art-pencil"></div>
+      </div>
+      <div class="art-note">One question at a time ✓</div>
+    </div>
+  </section>
+
+  <!-- MAIN INTERFACE -->
+  <main class="layout">
+    <section class="panel" id="setupPanel" aria-labelledby="setupTitle">
+      <div class="panel-head">
+        <div>
+          <h2 id="setupTitle">Set up your rehearsal</h2>
+          <p>Give DemoBuddy enough context to ask better questions.</p>
+        </div>
+        <span class="step-mark">01 / SETUP</span>
+      </div>
+      <div class="panel-body">
+        <!-- QUICK PRESETS -->
+        <div class="preset-bar">
+          <div class="preset-title"><span>⚡ Quick Project Templates</span></div>
+          <div class="preset-chips">
+            <button class="preset-chip" type="button" data-preset="campus">🎓 Campus Event Finder</button>
+            <button class="preset-chip" type="button" data-preset="mediscan">🤖 MediScan AI</button>
+            <button class="preset-chip" type="button" data-preset="ecotrack">⚡ EcoTrack IoT</button>
+            <button class="preset-chip" type="button" data-preset="codereview">💻 CodeReview Buddy</button>
+          </div>
+        </div>
+
+        <form id="setupForm">
+          <div class="field">
+            <label for="projectName">Project name</label>
+            <input id="projectName" maxlength="70" placeholder="e.g., Campus Event Finder" required value="Campus Event Finder" />
+          </div>
+          <div class="field">
+            <label for="projectDesc">What does your project do?</label>
+            <textarea id="projectDesc" maxlength="420" required placeholder="Explain the problem, who it helps, and what you built.">A responsive web app that helps students discover campus events, register, and get event updates.</textarea>
+            <div class="helper">A couple of sentences is enough. Avoid passwords, private data, or API keys.</div>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label for="audience">Who are you presenting to?</label>
+              <select id="audience">
+                <option value="beginner">Curious beginner</option>
+                <option value="recruiter">Recruiter</option>
+                <option value="judge">Hackathon judge</option>
+                <option value="investor">Angel / VC Investor</option>
+                <option value="architect">Senior Tech Architect</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="duration">Rehearsal length</label>
+              <select id="duration">
+                <option value="3">3-minute quick run</option>
+                <option value="5">5-minute deep run</option>
+              </select>
+            </div>
+          </div>
+          <button class="btn btn-primary full" type="submit">Meet my audience →</button>
+          <div id="setupError" class="error hidden" role="alert"></div>
+        </form>
+        <div class="tiny-note">
+          <span aria-hidden="true">✦</span>
+          <span><b>Privacy-first demo:</b> this prototype runs locally in your browser. Your project notes and voice data never leave your device.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- SIDEBAR STACK -->
+    <aside class="side-stack">
+      <section class="side-card">
+        <h3>How a session works</h3>
+        <p>No giant wall of questions. Just a focused rehearsal that adapts as you answer.</p>
+        <div class="steps">
+          <div class="side-step"><span class="number">1</span><span>Share the idea behind your project</span></div>
+          <div class="side-step"><span class="number">2</span><span>Answer three audience questions</span></div>
+          <div class="side-step"><span class="number">3</span><span>Get a pitch, score, and next steps</span></div>
+        </div>
+      </section>
+      <section class="side-card">
+        <h3>Pick your rehearsal mood</h3>
+        <p>The same project sounds different to different audiences.</p>
+        <span class="case-chip"><i></i> Beginner: clear basics</span>
+        <span class="case-chip"><i style="background:var(--olive)"></i> Recruiter: your impact</span>
+        <span class="case-chip"><i style="background:#8c73c7"></i> Judge: trade-offs</span>
+        <span class="case-chip"><i style="background:#d9aa38"></i> Investor: market & why now</span>
+        <span class="case-chip"><i style="background:#4c77ce"></i> Architect: scale & failovers</span>
+      </section>
+    </aside>
+  </main>
+
+  <!-- CHAT & REHEARSAL SESSION -->
+  <section class="panel chat-panel hidden" id="sessionPanel" aria-labelledby="sessionTitle">
+    <div class="panel-head">
+      <div>
+        <h2 id="sessionTitle">Your rehearsal room</h2>
+        <p id="sessionSub">A friendly audience is ready.</p>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <div class="timer-widget" id="timerWidget" title="Rehearsal countdown">
+          <span class="timer-pulse"></span>
+          <span id="timerDisplay">03:00</span>
+          <button id="timerToggleBtn" type="button" style="background:none;border:0;padding:0;cursor:pointer;font-size:12px" title="Pause/Resume">⏸</button>
+        </div>
+        <span class="step-mark" id="audienceBadge">CURIOUS BEGINNER</span>
+      </div>
+    </div>
+    <div class="chat-body">
+      <div class="session-bar">
+        <div class="progress-track" aria-label="Session progress">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="progress-label" id="progressLabel">QUESTION 1 OF 3</div>
+      </div>
+      
+      <div class="messages" id="messages" role="log" aria-live="polite" aria-relevant="additions text"></div>
+      
+      <!-- ANSWER AREA -->
+      <div id="answerArea">
+        <div class="answer-box">
+          <div class="answer-box-header">
+            <label for="answerInput">YOUR ANSWER</label>
+            <span id="charCount" style="font-size:11px;color:var(--muted)">0 / 1100</span>
+          </div>
+          <textarea id="answerInput" maxlength="1100" placeholder="Explain it in your own words… (Type or click the microphone to speak)"></textarea>
+          <div class="answer-actions">
+            <div class="left">
+              <button class="btn btn-secondary btn-sm" id="hintBtn" type="button" title="Get a structured hint">Need a hint?</button>
+              <button class="btn btn-secondary btn-sm" id="rescueBtn" type="button" title="Plan for live demo failures">Demo Rescue</button>
+              <button class="btn btn-secondary btn-sm" id="rescueStudioBtn" type="button" title="Browse disaster recovery scripts">Arsenal 🛡️</button>
+              <button class="btn btn-mic btn-sm" id="micBtn" type="button" title="Voice dictation (speech-to-text)">
+                <span id="micIcon">🎤</span> <span id="micLabel">Speak answer</span>
+              </button>
+            </div>
+            <div class="right">
+              <button class="btn btn-primary btn-sm" id="submitAnswer" type="button">Send answer ↗</button>
+            </div>
+          </div>
+        </div>
+        <div class="status" id="answerStatus" role="status">Tip: concrete examples make your explanation easier to follow. (Press Enter to send)</div>
+      </div>
+
+      <!-- REPORT AREA -->
+      <div id="reportArea" class="report hidden"></div>
+
+      <!-- BOTTOM SESSION ACTIONS -->
+      <div style="display:flex;gap:9px;flex-wrap:wrap;margin-top:20px;align-items:center">
+        <button class="btn btn-secondary btn-sm" id="restartBtn" type="button">Start again</button>
+        <button class="btn btn-secondary btn-sm hidden" id="copyBtn" type="button">Copy my summary</button>
+        <button class="btn btn-secondary btn-sm hidden" id="downloadMdBtn" type="button">Download Report (.md)</button>
+        <button class="btn btn-secondary btn-sm hidden" id="printReportBtn" type="button">Print / PDF</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer-note">
+    DemoBuddy is an interactive browser rehearsal agent. Built with privacy-first vanilla technologies, adaptive questioning, and real-time clarity feedback.
+  </footer>
+</div>
+
+<!-- TOAST NOTIFICATION -->
+<div class="toast hidden" id="toast" role="status"></div>
+
+<!-- DEMO RESCUE STUDIO MODAL -->
+<div class="modal-overlay hidden" id="rescueModal" role="dialog" aria-modal="true" aria-labelledby="rescueModalTitle">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div>
+        <h3 id="rescueModalTitle">🛡️ Demo Rescue Arsenal</h3>
+        <p style="margin:4px 0 0;font-size:12px;color:var(--muted)">Don't panic when things break. Pick your scenario for an instant battle-tested fallback script.</p>
+      </div>
+      <button class="modal-close" id="closeRescueModal" aria-label="Close modal">✕</button>
+    </div>
+    <div class="rescue-grid">
+      <div class="rescue-card" data-scenario="crash">
+        <div class="rescue-card-title">💥 Live Demo Crashed (500 Error / Exception)</div>
+        <div class="rescue-card-desc">The app froze or spat out a red error stack during your live demonstration.</div>
+        <div class="rescue-script">“It looks like our backend ran into an unexpected edge case. While I check the server logs, let me walk you through the architecture diagram and show the recorded workflow from our test suite.”</div>
+      </div>
+      <div class="rescue-card" data-scenario="wifi">
+        <div class="rescue-card-title">📡 WiFi or Network Connection Dropped</div>
+        <div class="rescue-card-desc">API requests are timing out or the stage network has locked up.</div>
+        <div class="rescue-script">“The venue network appears to have disconnected our live API socket. I have local cached seed data and offline mocks ready right here to show the user experience seamlessly.”</div>
+      </div>
+      <div class="rescue-card" data-scenario="db">
+        <div class="rescue-card-title">🗄️ Database / Auth / Secret Key Glitch</div>
+        <div class="rescue-card-desc">Login token expired or database migration mismatch on production.</div>
+        <div class="rescue-script">“Our auth provider token has expired on the stage IP. I am switching immediately to our pre-seeded guest demo profile so you can see the core value proposition.”</div>
+      </div>
+      <div class="rescue-card" data-scenario="blank">
+        <div class="rescue-card-title">⚠️ UI Lag or Empty Screen</div>
+        <div class="rescue-card-desc">Rendering didn't update or state is stuck in loading spinner.</div>
+        <div class="rescue-script">“The client state is waiting on a slow asynchronous batch. The key engineering decision we made here is graceful degradation—here is how the system recovers when retrying.”</div>
+      </div>
+    </div>
+    <div style="margin-top:16px;text-align:right">
+      <button class="btn btn-secondary btn-sm" id="closeRescueModalBtn" type="button">Close Arsenal</button>
+    </div>
+  </div>
+</div>
+
+<!-- REHEARSAL HISTORY MODAL -->
+<div class="modal-overlay hidden" id="historyModal" role="dialog" aria-modal="true" aria-labelledby="historyModalTitle">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div>
+        <h3 id="historyModalTitle">📜 Rehearsal Log</h3>
+        <p style="margin:4px 0 0;font-size:12px;color:var(--muted)">Review your practice sessions and clarity progress over time.</p>
+      </div>
+      <button class="modal-close" id="closeHistoryModal" aria-label="Close modal">✕</button>
+    </div>
+    <div id="historyList" style="max-height:360px;overflow-y:auto">
+      <!-- Injected dynamically -->
+    </div>
+    <div style="margin-top:16px;display:flex;justify-content:space-between;align-items:center">
+      <button class="btn btn-secondary btn-sm" id="clearHistoryBtn" type="button">Clear History</button>
+      <button class="btn btn-secondary btn-sm" id="closeHistoryBtn" type="button">Done</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const setupPanel = $('setupPanel'), sessionPanel = $('sessionPanel'), form = $('setupForm');
+
+  // AUDIO & SOUND SYNTHESIS (Web Audio API)
+  let soundEnabled = true;
+  function playSound(type) {
+    if (!soundEnabled) return;
+    try {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtx) return;
+      const ctx = new AudioCtx();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      const now = ctx.currentTime;
+      if (type === 'chime') {
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(523.25, now);
+        osc.frequency.exponentialRampToValueAtTime(659.25, now + 0.12);
+        gain.gain.setValueAtTime(0.08, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+        osc.start(now);
+        osc.stop(now + 0.25);
+      } else if (type === 'fanfare') {
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(440, now);
+        osc.frequency.setValueAtTime(554.37, now + 0.1);
+        osc.frequency.setValueAtTime(659.25, now + 0.2);
+        gain.gain.setValueAtTime(0.12, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
+        osc.start(now);
+        osc.stop(now + 0.45);
+      }
+    } catch(e) {}
+  }
+
+  // SPEECH SYNTHESIS (Voice Coach Read-Aloud)
+  let voiceEnabled = true;
+  function speakCoach(text) {
+    if (!voiceEnabled || !('speechSynthesis' in window)) return;
+    try {
+      window.speechSynthesis.cancel();
+      const clean = text.replace(/[*_#`↗✓]/g, '').trim();
+      const utter = new SpeechSynthesisUtterance(clean);
+      utter.rate = 1.05;
+      utter.pitch = 1.0;
+      window.speechSynthesis.speak(utter);
+    } catch(e) {}
+  }
+
+  // SPEECH RECOGNITION (Dictation / Mic)
+  const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+  let recognition = null;
+  let isListening = false;
+  if (SpeechRec) {
+    try {
+      recognition = new SpeechRec();
+      recognition.continuous = false;
+      recognition.interimResults = true;
+      recognition.lang = 'en-US';
+      recognition.onstart = () => {
+        isListening = true;
+        $('micBtn').classList.add('listening');
+        $('micLabel').textContent = 'Listening…';
+        toast('Microphone active: speak your answer');
+      };
+      recognition.onresult = (evt) => {
+        let transcript = '';
+        for (let i = 0; i < evt.results.length; i++) {
+          transcript += evt.results[i][0].transcript;
+        }
+        if (transcript) {
+          const current = $('answerInput').value;
+          $('answerInput').value = current ? current + ' ' + transcript : transcript;
+          updateCharCount();
+        }
+      };
+      recognition.onerror = () => {
+        stopListening();
+        toast('Speech recognition encountered an issue. You can continue typing.');
+      };
+      recognition.onend = () => {
+        stopListening();
+      };
+    } catch(e) {}
+  }
+
+  function toggleListening() {
+    if (!recognition) {
+      toast('Speech-to-text is not supported in this browser. Please type your answer.');
+      return;
+    }
+    if (isListening) {
+      recognition.stop();
+      stopListening();
+    } else {
+      try {
+        recognition.start();
+      } catch(e) {
+        stopListening();
+      }
+    }
+  }
+
+  function stopListening() {
+    isListening = false;
+    $('micBtn').classList.remove('listening');
+    $('micLabel').textContent = 'Speak answer';
+  }
+
+  // AUDIENCE DEFINITIONS
+  const AUDIENCES = {
+    beginner: {
+      label:'Curious beginner',
+      badge:'CURIOUS BEGINNER',
+      first:'Imagine I have never seen this project before. What problem does it solve, and who would use it?',
+      second:'What is one simple example of how someone would use it from start to finish?',
+      third:'If one part of your demo stopped working, what would you show or explain instead?'
+    },
+    recruiter: {
+      label:'Recruiter',
+      badge:'RECRUITER MODE',
+      first:'What did you personally build, and what changed for the person using it?',
+      second:'What was one technical decision you made, and why did you choose that approach?',
+      third:'If I asked you to improve one thing next, what would you choose and how would you measure improvement?'
+    },
+    judge: {
+      label:'Hackathon judge',
+      badge:'HACKATHON JUDGE',
+      first:'What specific problem are you solving, and what makes your approach meaningfully different?',
+      second:'What is the riskiest assumption or technical trade-off in this project, and how would you test it?',
+      third:'If the live demo failed on stage, how would you prove the core idea still works without pretending the failure did not happen?'
+    },
+    investor: {
+      label:'Angel / VC Investor',
+      badge:'INVESTOR PITCH',
+      first:'Why does this problem matter now, and how big is the opportunity or user demand for your solution?',
+      second:'What is your unfair advantage or barrier to entry against established alternatives?',
+      third:'If you run out of bandwidth or technical resources, what is the single minimum loop you protect?'
+    },
+    architect: {
+      label:'Senior Tech Architect',
+      badge:'ARCHITECT REVIEW',
+      first:'Walk me through your system architecture, data flow, and primary data store choices.',
+      second:'Where are the critical bottlenecks when traffic scales by 100x, and how do you handle state consistency?',
+      third:'If a primary upstream service drops out mid-request, how does your system fail gracefully?'
+    }
+  };
+
+  // PRESET DATA
+  const PRESETS = {
+    campus: {
+      name: 'Campus Event Finder',
+      desc: 'A responsive web app that helps students discover campus events, register, and get event updates in one unified dashboard.',
+      aud: 'beginner',
+      dur: '3'
+    },
+    mediscan: {
+      name: 'MediScan AI',
+      desc: 'An edge-compatible machine learning tool that analyzes chest X-rays to flag potential anomalies for rural clinics with offline fallbacks.',
+      aud: 'judge',
+      dur: '5'
+    },
+    ecotrack: {
+      name: 'EcoTrack IoT',
+      desc: 'A low-power smart sensor network and companion app monitoring lab energy waste and heating efficiency across campus facilities.',
+      aud: 'recruiter',
+      dur: '3'
+    },
+    codereview: {
+      name: 'CodeReview Buddy',
+      desc: 'A lightweight Git assistant providing automated PR security hygiene checks, cyclomatic complexity alerts, and test coverage suggestions.',
+      aud: 'judge',
+      dur: '5'
+    }
+  };
+
+  let state = null;
+  let timerInterval = null;
+  let timerRemaining = 180;
+  let timerPaused = false;
+
+  // TIMER MANAGEMENT
+  function startTimer(minutes) {
+    clearInterval(timerInterval);
+    timerRemaining = parseInt(minutes, 10) * 60;
+    timerPaused = false;
+    updateTimerDisplay();
+    $('timerToggleBtn').textContent = '⏸';
+    timerInterval = setInterval(() => {
+      if (!timerPaused && timerRemaining > 0) {
+        timerRemaining--;
+        updateTimerDisplay();
+        if (timerRemaining === 30) {
+          toast('⏱ 30 seconds remaining in your rehearsal window.');
+        }
+      }
+    }, 1000);
+  }
+
+  function updateTimerDisplay() {
+    const mins = Math.floor(timerRemaining / 60);
+    const secs = timerRemaining % 60;
+    $('timerDisplay').textContent = `${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
+  }
+
+  function toggleTimer() {
+    timerPaused = !timerPaused;
+    $('timerToggleBtn').textContent = timerPaused ? '▶' : '⏸';
+    toast(timerPaused ? 'Timer paused' : 'Timer resumed');
+  }
+
+  function addMessage(kind, label, text) {
+    const el = document.createElement('div');
+    el.className = 'message ' + kind;
+    const lab = document.createElement('span');
+    lab.className = 'msg-label';
+    lab.textContent = label;
+    const body = document.createElement('span');
+    body.textContent = text;
+    el.append(lab, body);
+    $('messages').appendChild(el);
+    el.scrollIntoView({behavior:'smooth', block:'nearest'});
+    if (kind === 'agent' && label !== 'YOU') {
+      playSound('chime');
+      speakCoach(text);
+    }
+  }
+
+  function currentQuestion() {
+    const aud = AUDIENCES[state.audience] || AUDIENCES.beginner;
+    return aud[['first','second','third'][state.index]];
+  }
+
+  function pickAdaptiveFollowup(answer) {
+    const a = answer.toLowerCase();
+    if (answer.trim().length < 45) {
+      return 'Could you make that more concrete? Name one real user action or a specific result so your audience can picture it.';
+    }
+    if (/aws|lambda|s3|api|database|react|python|model|architecture|cloud|framework|typescript|javascript|docker|sql|nosql/.test(a)) {
+      return 'You mentioned a technical choice. Why was it a good fit for this project, and what trade-off did you accept?';
+    }
+    if (/user|student|customer|people|problem|helps|save|faster|easier|access|patient|doctor|client/.test(a)) {
+      return 'Nice—now connect that user benefit to evidence. How would you test whether the project actually delivers it?';
+    }
+    return 'What is the most important assumption in that explanation, and how could you test it with a small experiment?';
+  }
+
+  function coachingNote(answer) {
+    const a = answer.toLowerCase();
+    const notes = [];
+    if (answer.trim().length < 45) {
+      notes.push('Add one concrete example or detail.');
+    }
+    if (!/user|student|customer|people|problem|helps|because|result|measure|test|faster|easier|patient/.test(a)) {
+      notes.push('Connect your choice to a user problem or outcome.');
+    }
+    if (!/test|measure|tested|metric|feedback|result|before|after|benchmarks|logs/.test(a)) {
+      notes.push('Name one way you would test or measure the result.');
+    }
+    // Check filler words
+    const fillerWords = (a.match(/\b(um|uh|like|basically|actually|literally)\b/g) || []).length;
+    if (fillerWords >= 2) {
+      notes.push('Try pausing instead of filler words (like “basically” or “actually”).');
+    }
+
+    if (notes.length === 0) {
+      return 'Good direction: your answer connects a decision with a reason. Keep one concrete example ready.';
+    }
+    return notes.slice(0,2).join(' ');
+  }
+
+  function updateCharCount() {
+    const len = $('answerInput').value.length;
+    $('charCount').textContent = `${len} / 1100`;
+  }
+
+  function start(sample=false) {
+    const name = $('projectName').value.trim();
+    const desc = $('projectDesc').value.trim();
+    const audience = $('audience').value;
+    const duration = $('duration').value;
+    if (!name || !desc) {
+      $('setupError').textContent = 'Add a project name and a short description to start.';
+      $('setupError').classList.remove('hidden');
+      return;
+    }
+    $('setupError').classList.add('hidden');
+    state = {
+      name,
+      desc,
+      audience,
+      duration,
+      index: 0,
+      answers: [],
+      hints: 0,
+      rescueUsed: false,
+      sample,
+      startTime: Date.now()
+    };
+
+    $('messages').replaceChildren();
+    $('reportArea').replaceChildren();
+    $('reportArea').classList.add('hidden');
+    $('answerArea').classList.remove('hidden');
+    $('copyBtn').classList.add('hidden');
+    $('downloadMdBtn').classList.add('hidden');
+    $('printReportBtn').classList.add('hidden');
+    $('restartBtn').classList.remove('hidden');
+    $('sessionPanel').classList.remove('hidden');
+    
+    const audData = AUDIENCES[audience] || AUDIENCES.beginner;
+    $('audienceBadge').textContent = audData.badge;
+    $('sessionSub').textContent = `${name} · ${audData.label} · ${duration} minute target`;
+
+    startTimer(duration);
+
+    addMessage('agent', 'DEMOBUDDY', `Welcome! I have your project notes: “${desc}” I'll ask one question at a time. If you get stuck, ask for a hint—this is practice, not a test.`);
+    addMessage('agent', audData.label.toUpperCase(), currentQuestion());
+    updateProgress();
+    updateCharCount();
+    sessionPanel.scrollIntoView({behavior:'smooth', block:'start'});
+    $('answerInput').focus();
+
+    if (sample) {
+      const sampleAnswers = [
+        `It helps students find campus events and register in one place, so they do not have to search multiple announcements.`,
+        `I used a responsive React interface and separated event browsing from registration. I would test it with students and measure whether they can find and register for an event without help.`,
+        `I would show a short recorded flow and explain what failed honestly, then investigate the error logs before trying again.`
+      ];
+      window.setTimeout(() => {
+        if (state && state.sample) {
+          $('answerInput').value = sampleAnswers[state.index] || '';
+          updateCharCount();
+          $('answerStatus').textContent = 'Sample mode is active—send this example answer to see the adaptive flow.';
+        }
+      }, 20);
+    }
+  }
+
+  function updateProgress() {
+    $('progressFill').style.width = ((state.index / 3) * 100) + '%';
+    $('progressLabel').textContent = `QUESTION ${Math.min(state.index + 1, 3)} OF 3`;
+  }
+
+  function sendAnswer() {
+    if (!state || state.index >= 3) return;
+    const answer = $('answerInput').value.trim();
+    if (!answer) {
+      $('answerStatus').textContent = 'Write a sentence first, or use the hint button for a nudge.';
+      $('answerInput').focus();
+      return;
+    }
+    stopListening();
+    addMessage('user', 'YOU', answer);
+    state.answers.push({
+      question: currentQuestion(),
+      answer,
+      feedback: coachingNote(answer)
+    });
+    $('answerInput').value = '';
+    updateCharCount();
+
+    if (state.index === 0) {
+      addMessage('agent', 'A LITTLE FEEDBACK', coachingNote(answer));
+      const follow = pickAdaptiveFollowup(answer);
+      state.customSecond = follow;
+    } else if (state.index === 1) {
+      addMessage('agent', 'A LITTLE FEEDBACK', coachingNote(answer));
+    }
+
+    state.index++;
+    if (state.index >= 3) {
+      finish();
+      return;
+    }
+    updateProgress();
+    const q = (state.index === 1 && state.customSecond) ? state.customSecond : currentQuestion();
+    const currentAud = AUDIENCES[state.audience] || AUDIENCES.beginner;
+    addMessage('agent', state.index === 2 ? 'DEMO RESCUE DRILL' : currentAud.label.toUpperCase(), q);
+    $('answerStatus').textContent = 'Tip: concrete examples make your explanation easier to follow.';
+    $('answerInput').focus();
+
+    if (state.sample) {
+      const sampleAnswers = [
+        `It helps students find campus events and register in one place, so they do not have to search multiple announcements.`,
+        `I used a responsive React interface and separated event browsing from registration. I would test it with students and measure whether they can find and register for an event without help.`,
+        `I would show a short recorded flow and explain what failed honestly, then investigate the error logs before trying again.`
+      ];
+      window.setTimeout(() => {
+        if (state && state.sample && state.index < 3) {
+          $('answerInput').value = sampleAnswers[state.index] || '';
+          updateCharCount();
+        }
+      }, 20);
+    }
+  }
+
+  function finish() {
+    clearInterval(timerInterval);
+    playSound('fanfare');
+    $('progressFill').style.width = '100%';
+    $('progressLabel').textContent = 'REHEARSAL COMPLETE';
+    $('answerArea').classList.add('hidden');
+    $('reportArea').classList.remove('hidden');
+    $('copyBtn').classList.remove('hidden');
+    $('downloadMdBtn').classList.remove('hidden');
+    $('printReportBtn').classList.remove('hidden');
+
+    const answers = state.answers;
+    let specificity = 0, userfocus = 0, testing = 0;
+    answers.forEach(({answer}) => {
+      const a = answer.toLowerCase();
+      if (answer.trim().length >= 65) specificity++;
+      if (/user|student|customer|people|problem|helps|because|result|faster|easier|access|patient/.test(a)) userfocus++;
+      if (/test|measure|tested|metric|feedback|result|before|after|logs|record|benchmark/.test(a)) testing++;
+    });
+
+    const score = Math.min(100, Math.round(((specificity + userfocus + testing) / 9) * 100));
+    state.score = score;
+    const project = state.name;
+
+    const probClarity = Math.min(100, Math.round(((userfocus + 1) / 4) * 100));
+    const techDepth = Math.min(100, Math.round(((specificity + 1) / 4) * 100));
+    const resilience = Math.min(100, Math.round(((testing + 1) / 4) * 100));
+
+    $('reportArea').innerHTML = `
+      <div class="score-row">
+        <div class="score-num">${score}<small>/100</small></div>
+        <div>
+          <h3>Your rehearsal snapshot</h3>
+          <p>This is a rule-based clarity checklist—not a judgement of your project's quality. Use it to decide what to refine next.</p>
+        </div>
+      </div>
+
+      <div class="sub-scores">
+        <div class="sub-score-card">
+          <div class="sub-score-label">🎯 Problem Clarity</div>
+          <div class="sub-score-value"><b>${probClarity}%</b></div>
+          <div class="sub-score-bar"><div class="sub-score-fill" style="width:${probClarity}%"></div></div>
+        </div>
+        <div class="sub-score-card">
+          <div class="sub-score-label">⚙️ Technical Depth</div>
+          <div class="sub-score-value"><b>${techDepth}%</b></div>
+          <div class="sub-score-bar"><div class="sub-score-fill" style="width:${techDepth}%;background:var(--coral)"></div></div>
+        </div>
+        <div class="sub-score-card">
+          <div class="sub-score-label">🛡️ Demo Resilience</div>
+          <div class="sub-score-value"><b>${resilience}%</b></div>
+          <div class="sub-score-bar"><div class="sub-score-fill" style="width:${resilience}%;background:#8c73c7"></div></div>
+        </div>
+      </div>
+
+      <div class="feedback-grid">
+        <div class="feedback-card">
+          <h4>✓ One strength</h4>
+          <p>${userfocus > 0 ? 'You connected at least one answer to a user or problem. Keep leading with that context.' : 'You completed the full rehearsal. Next, lead with the real person or problem your project serves.'}</p>
+        </div>
+        <div class="feedback-card">
+          <h4>↗ One next step</h4>
+          <p>${testing > 0 ? 'You mentioned validation or outcomes. Make the evidence concrete with one test or observable result.' : 'Add one specific test, feedback point, or measurement that could show whether the project works.'}</p>
+        </div>
+      </div>
+
+      <div class="pitch">
+        <div class="pitch-header">
+          <h3>Your 60-second pitch draft</h3>
+          <div class="pitch-tones">
+            <button class="pitch-tone-btn active" id="toneOriginal" type="button">Default Pitch</button>
+            <button class="pitch-tone-btn" id="tonePunchy" type="button">Punchy (30s)</button>
+            <button class="pitch-tone-btn" id="toneTech" type="button">Technical</button>
+          </div>
+        </div>
+        <p id="pitchText"></p>
+      </div>
+
+      <div class="feedback-card">
+        <h4>Try this before presenting</h4>
+        <p>Explain the problem in one sentence, show one complete user journey, name one trade-off, and prepare an honest fallback if the live demo fails.</p>
+      </div>
+    `;
+
+    const first = answers[0]?.answer || state.desc;
+    const second = answers[1]?.answer || 'I chose a focused approach and would validate the key assumptions with a small test.';
+    const third = answers[2]?.answer || 'If the live demo fails, I will explain what happened and show a verified fallback.';
+
+    const defaultPitch = `${project} helps address this problem: ${state.desc}\n\nMy approach: ${first}\n\nOne important design decision or test: ${second}\n\nIf something goes wrong, I will explain the failure honestly and show the next diagnostic step: ${third}`;
+    state.defaultPitch = defaultPitch;
+
+    $('pitchText').textContent = defaultPitch;
+
+    // Pitch Tone Switchers
+    $('toneOriginal').addEventListener('click', () => {
+      setToneActive('toneOriginal');
+      $('pitchText').textContent = defaultPitch;
+    });
+    $('tonePunchy').addEventListener('click', () => {
+      setToneActive('tonePunchy');
+      $('pitchText').textContent = `In short: ${project} solves this: ${state.desc}\n\nHere's how: ${first.slice(0, 140)}...\n\nWhy it works: ${second.slice(0, 140)}... Even if stage conditions fail, we have an honest verified plan.`;
+    });
+    $('toneTech').addEventListener('click', () => {
+      setToneActive('toneTech');
+      $('pitchText').textContent = `Architectural Overview for ${project}:\n\nCore Problem & Domain: ${state.desc}\nImplementation & Component Architecture: ${first}\nValidation, Metrics & Trade-offs: ${second}\nFault Tolerance & Demo Recovery: ${third}`;
+    });
+
+    updateProgress();
+    addMessage('agent', 'SESSION COMPLETE', 'You did it! Your pitch draft and clarity report are ready. Pick one suggestion to practise again before the real presentation.');
+    
+    // Save session to history
+    saveSessionToHistory();
+  }
+
+  function setToneActive(id) {
+    ['toneOriginal','tonePunchy','toneTech'].forEach(tid => {
+      const el = $(tid);
+      if (el) el.classList.toggle('active', tid === id);
+    });
+  }
+
+  function hint() {
+    if (!state) return;
+    state.hints++;
+    const hints = {
+      beginner: 'Try: “This helps [person] do [task] without [pain point].”',
+      recruiter: 'Try describing what you personally built, one trade-off, and the impact you can verify.',
+      judge: 'Try separating the user problem, your differentiator, and one assumption you still need to validate.',
+      investor: 'Try explaining the market size, why competitors fail here, and your unfair execution moat.',
+      architect: 'Try detailing your data schema, synchronous vs asynchronous boundary, and failure isolation.'
+    };
+    const h = hints[state.audience] || hints.beginner;
+    addMessage('agent', 'HINT — NOT THE ANSWER', h);
+    $('answerStatus').textContent = 'A hint is available; put the idea in your own words.';
+  }
+
+  function rescue() {
+    if (!state) return;
+    state.rescueUsed = true;
+    const text = `DEMO RESCUE PLAN for ${state.name}: 1) State honestly what failed. 2) Show a short recording, screenshot, or prepared sample output if you have one. 3) Explain the expected flow. 4) Identify the first diagnostic step (logs, recent changes, dependencies). 5) Do not claim a result you cannot verify.`;
+    addMessage('agent', 'DEMO RESCUE MODE', text);
+    $('answerStatus').textContent = 'Rescue mode prepares an honest fallback; it does not pretend the demo succeeded. (Click Arsenal 🛡️ for interactive fallback scripts)';
+  }
+
+  // MODAL CONTROLS
+  function openRescueModal() {
+    $('rescueModal').classList.remove('hidden');
+  }
+  function closeRescueModal() {
+    $('rescueModal').classList.add('hidden');
+  }
+
+  $('rescueStudioBtn').addEventListener('click', openRescueModal);
+  $('closeRescueModal').addEventListener('click', closeRescueModal);
+  $('closeRescueModalBtn').addEventListener('click', closeRescueModal);
+  $('rescueModal').addEventListener('click', e => {
+    if (e.target === $('rescueModal')) closeRescueModal();
+  });
+
+  // Rescue script cards click to inject into answer input
+  document.querySelectorAll('.rescue-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const script = card.querySelector('.rescue-script')?.textContent || '';
+      if (script) {
+        $('answerInput').value = script.replace(/^[“”]|["”]$/g, '').trim();
+        updateCharCount();
+        closeRescueModal();
+        toast('Rescue phrase loaded into answer box!');
+      }
+    });
+  });
+
+  // SUMMARY & EXPORT
+  async function copySummary() {
+    if (!state) return;
+    const pitch = $('pitchText')?.textContent || '';
+    const currentAud = AUDIENCES[state.audience] || AUDIENCES.beginner;
+    const summary = `DemoBuddy Rehearsal Summary — ${state.name}\nAudience: ${currentAud.label}\nClarity Score: ${state.score || 0}/100\n\n${pitch}\n\nNote: Prototype feedback is rule-based. Generated via DemoBuddy.`;
+    try {
+      await navigator.clipboard.writeText(summary);
+      toast('Rehearsal summary copied to clipboard.');
+    } catch(e) {
+      const t = document.createElement('textarea');
+      t.value = summary;
+      document.body.appendChild(t);
+      t.select();
+      let ok = false;
+      try { ok = document.execCommand('copy'); } catch(err) {}
+      t.remove();
+      toast(ok ? 'Rehearsal summary copied.' : 'Copy unavailable; select the pitch text manually.');
+    }
+  }
+
+  function downloadMarkdown() {
+    if (!state) return;
+    const currentAud = AUDIENCES[state.audience] || AUDIENCES.beginner;
+    let md = `# DemoBuddy Rehearsal Report: ${state.name}\n\n`;
+    md += `**Date:** ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}\n`;
+    md += `**Audience Mode:** ${currentAud.label}\n`;
+    md += `**Clarity Score:** ${state.score || 0}/100\n\n`;
+    md += `## Project Overview\n${state.desc}\n\n`;
+    md += `## Rehearsal Q&A\n\n`;
+    state.answers.forEach((item, idx) => {
+      md += `### Question ${idx+1}: ${item.question}\n`;
+      md += `**Your Answer:** ${item.answer}\n\n`;
+      md += `*Coaching Note:* ${item.feedback}\n\n`;
+    });
+    md += `## 60-Second Pitch Draft\n\n${$('pitchText')?.textContent || state.defaultPitch}\n\n`;
+    md += `---\n*Generated locally with DemoBuddy.*`;
+
+    const blob = new Blob([md], { type: 'text/markdown' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${state.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-rehearsal-report.md`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+    toast('Report downloaded as Markdown.');
+  }
+
+  // SAFE LOCAL STORAGE ACCESS (prevents SecurityError on opaque origin or sandboxed environments)
+  function safeGetStorage(key, fallback = null) {
+    try {
+      if (typeof window !== 'undefined' && 'localStorage' in window) {
+        return window.localStorage.getItem(key);
+      }
+    } catch(e) {}
+    return fallback;
+  }
+  function safeSetStorage(key, val) {
+    try {
+      if (typeof window !== 'undefined' && 'localStorage' in window) {
+        window.localStorage.setItem(key, val);
+      }
+    } catch(e) {}
+  }
+  function safeRemoveStorage(key) {
+    try {
+      if (typeof window !== 'undefined' && 'localStorage' in window) {
+        window.localStorage.removeItem(key);
+      }
+    } catch(e) {}
+  }
+
+  // REHEARSAL HISTORY
+  function saveSessionToHistory() {
+    if (!state) return;
+    try {
+      const history = JSON.parse(safeGetStorage('demobuddy_history', '[]') || '[]');
+      const currentAud = AUDIENCES[state.audience] || AUDIENCES.beginner;
+      history.unshift({
+        id: Date.now(),
+        date: new Date().toLocaleDateString(),
+        time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+        name: state.name,
+        desc: state.desc,
+        audience: currentAud.label,
+        score: state.score || 0,
+        pitch: $('pitchText')?.textContent || state.defaultPitch
+      });
+      safeSetStorage('demobuddy_history', JSON.stringify(history.slice(0, 20)));
+    } catch(e) {}
+  }
+
+  function renderHistory() {
+    const list = $('historyList');
+    list.innerHTML = '';
+    try {
+      const history = JSON.parse(safeGetStorage('demobuddy_history', '[]') || '[]');
+      if (history.length === 0) {
+        list.innerHTML = `<p style="font-size:13px;color:var(--muted);text-align:center;padding:24px 0">No rehearsals logged yet. Complete a rehearsal to see records here!</p>`;
+        return;
+      }
+      history.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'history-item';
+        div.innerHTML = `
+          <div class="history-header">
+            <span class="history-project">${item.name}</span>
+            <span class="small-pill">${item.score}/100</span>
+          </div>
+          <div class="history-date">${item.date} · ${item.time} · ${item.audience}</div>
+          <p style="font-size:12px;margin:8px 0 0;color:var(--ink-secondary);line-height:1.4">${item.pitch.slice(0,180)}...</p>
+        `;
+        list.appendChild(div);
+      });
+    } catch(e) {
+      list.innerHTML = `<p style="font-size:13px;color:var(--muted)">Unable to load history.</p>`;
+    }
+  }
+
+  function openHistoryModal() {
+    renderHistory();
+    $('historyModal').classList.remove('hidden');
+  }
+  function closeHistoryModal() {
+    $('historyModal').classList.add('hidden');
+  }
+
+  $('historyToggleBtn').addEventListener('click', openHistoryModal);
+  $('closeHistoryModal').addEventListener('click', closeHistoryModal);
+  $('closeHistoryBtn').addEventListener('click', closeHistoryModal);
+  $('historyModal').addEventListener('click', e => {
+    if (e.target === $('historyModal')) closeHistoryModal();
+  });
+  $('clearHistoryBtn').addEventListener('click', () => {
+    safeRemoveStorage('demobuddy_history');
+    renderHistory();
+    toast('Rehearsal history cleared.');
+  });
+
+  // THEME TOGGLE
+  function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme') || 'light';
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    safeSetStorage('demobuddy_theme', next);
+    $('themeToggleText').textContent = next === 'dark' ? '☀️ Light' : '🌙 Dark';
+    toast(`Theme changed to ${next} mode`);
+  }
+
+  // Load saved theme
+  const savedTheme = safeGetStorage('demobuddy_theme');
+  if (savedTheme) {
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    $('themeToggleText').textContent = savedTheme === 'dark' ? '☀️ Light' : '🌙 Dark';
+  }
+
+  $('themeToggleBtn').addEventListener('click', toggleTheme);
+
+  // VOICE TOGGLE
+  $('voiceToggleBtn').addEventListener('click', () => {
+    voiceEnabled = !voiceEnabled;
+    $('voiceToggleIcon').textContent = voiceEnabled ? '🔊 Coach Voice: On' : '🔇 Coach Voice: Off';
+    if (!voiceEnabled && 'speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+    }
+    toast(voiceEnabled ? 'Voice coach enabled' : 'Voice coach muted');
+  });
+
+  // PRESET CLICKS
+  document.querySelectorAll('.preset-chip').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const key = btn.dataset.preset;
+      const data = PRESETS[key];
+      if (data) {
+        $('projectName').value = data.name;
+        $('projectDesc').value = data.desc;
+        $('audience').value = data.aud;
+        $('duration').value = data.dur;
+        toast(`Loaded template: ${data.name}`);
+      }
+    });
+  });
+
+  function toast(message) {
+    const el = $('toast');
+    el.textContent = message;
+    el.classList.remove('hidden');
+    window.clearTimeout(el._tid);
+    el._tid = window.setTimeout(() => el.classList.add('hidden'), 2600);
+  }
+
+  function reset() {
+    clearInterval(timerInterval);
+    stopListening();
+    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+    state = null;
+    sessionPanel.classList.add('hidden');
+    setupPanel.scrollIntoView({behavior:'smooth', block:'start'});
+    $('answerInput').value = '';
+    updateCharCount();
+  }
+
+  // EVENT LISTENERS
+  form.addEventListener('submit', e => { e.preventDefault(); start(false); });
+  
+  $('heroStart').addEventListener('click', () => {
+    setupPanel.scrollIntoView({behavior:'smooth', block:'start'});
+    $('projectName').focus();
+  });
+  
+  $('heroSample').addEventListener('click', () => {
+    $('projectName').value = 'Campus Event Finder';
+    $('projectDesc').value = 'A responsive web app that helps students discover campus events, register, and get event updates.';
+    $('audience').value = 'judge';
+    $('duration').value = '3';
+    start(true);
+  });
+
+  $('submitAnswer').addEventListener('click', sendAnswer);
+  $('answerInput').addEventListener('input', updateCharCount);
+  $('answerInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendAnswer();
+    }
+  });
+
+  $('hintBtn').addEventListener('click', hint);
+  $('rescueBtn').addEventListener('click', rescue);
+  $('micBtn').addEventListener('click', toggleListening);
+  $('restartBtn').addEventListener('click', reset);
+  $('copyBtn').addEventListener('click', copySummary);
+  $('downloadMdBtn').addEventListener('click', downloadMarkdown);
+  $('printReportBtn').addEventListener('click', () => window.print());
+  $('timerToggleBtn').addEventListener('click', toggleTimer);
+
+  // Global Keyboard Shortcuts
+  window.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      closeRescueModal();
+      closeHistoryModal();
+    }
+    // Alt + H for hint, Alt + R for rescue
+    if (e.altKey && e.key.toLowerCase() === 'h') {
+      e.preventDefault();
+      hint();
+    }
+    if (e.altKey && e.key.toLowerCase() === 'r') {
+      e.preventDefault();
+      rescue();
+    }
+    if (e.altKey && e.key.toLowerCase() === 'm') {
+      e.preventDefault();
+      toggleListening();
+    }
+  });
+})();
+</script>
+</body>
+</html>

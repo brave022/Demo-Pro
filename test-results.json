@@ -1,0 +1,65 @@
+{
+  "summary": "15/15 tests passed",
+  "tests": [
+    {
+      "name": "load_and_title",
+      "passed": true
+    },
+    {
+      "name": "setup_defaults",
+      "passed": true
+    },
+    {
+      "name": "sample_start_judge_mode",
+      "passed": true
+    },
+    {
+      "name": "hint_action",
+      "passed": true
+    },
+    {
+      "name": "demo_rescue_action",
+      "passed": true
+    },
+    {
+      "name": "finishes_three_questions",
+      "passed": true
+    },
+    {
+      "name": "stores_three_answers",
+      "passed": true
+    },
+    {
+      "name": "final_score_is_visible",
+      "passed": true
+    },
+    {
+      "name": "recruiter_mode",
+      "passed": true
+    },
+    {
+      "name": "recruiter_question_is_custom",
+      "passed": true
+    },
+    {
+      "name": "empty_answer_guard",
+      "passed": true
+    },
+    {
+      "name": "mobile_no_horizontal_overflow",
+      "passed": true
+    },
+    {
+      "name": "short_answer_adaptive_branch",
+      "passed": true
+    },
+    {
+      "name": "technical_answer_adaptive_branch",
+      "passed": true
+    },
+    {
+      "name": "no_page_errors",
+      "passed": true
+    }
+  ]
+}

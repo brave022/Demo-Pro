@@ -1,0 +1,3 @@
+MANDATORY CHALLENGE TAG: #agents
+Suggested optional tags if available: StudentBuilders, DeveloperTools, Education, WebDevelopment
+Do not rely on the body hashtags alone: add the exact #agents tag in the Builder Center article tag picker if it is available.
